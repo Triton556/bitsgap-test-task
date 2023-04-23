@@ -33,6 +33,22 @@ mixin _$ThemeStore on _ThemeStore, Store {
     });
   }
 
+  late final _$platformBrightnessAtom =
+      Atom(name: '_ThemeStore.platformBrightness', context: context);
+
+  @override
+  Brightness get platformBrightness {
+    _$platformBrightnessAtom.reportRead();
+    return super.platformBrightness;
+  }
+
+  @override
+  set platformBrightness(Brightness value) {
+    _$platformBrightnessAtom.reportWrite(value, super.platformBrightness, () {
+      super.platformBrightness = value;
+    });
+  }
+
   late final _$_ThemeStoreActionController =
       ActionController(name: '_ThemeStore', context: context);
 
@@ -51,6 +67,7 @@ mixin _$ThemeStore on _ThemeStore, Store {
   String toString() {
     return '''
 themeMode: ${themeMode},
+platformBrightness: ${platformBrightness},
 isLightTheme: ${isLightTheme}
     ''';
   }

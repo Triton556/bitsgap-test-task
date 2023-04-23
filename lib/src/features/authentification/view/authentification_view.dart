@@ -34,48 +34,11 @@ class _AuthentificationViewState extends State<AuthentificationView>
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Form(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 92, bottom: 30),
-                        child: SizedBox(
-                          height: 162,
-                          width: 342,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(height: 56),
-                              AuthFormField(hint: 'Username'),
-                              SizedBox(height: 12),
-                              AuthFormField(hint: 'Password'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: LoginForm(),
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Form(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 92, bottom: 30),
-                        child: SizedBox(
-                          height: 162,
-                          width: 342,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              AuthFormField(hint: 'Email'),
-                              SizedBox(height: 12),
-                              AuthFormField(hint: 'Username'),
-                              SizedBox(height: 12),
-                              AuthFormField(hint: 'Password'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: SignInForm(),
                   ),
                 ],
               ),
@@ -104,6 +67,65 @@ class _AuthentificationViewState extends State<AuthentificationView>
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SignInForm extends StatelessWidget {
+  const SignInForm({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 92, bottom: 30),
+        child: SizedBox(
+          height: 162,
+          width: 342,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AuthFormField(hint: 'Email'),
+              SizedBox(height: 12),
+              AuthFormField(hint: 'Username'),
+              SizedBox(height: 12),
+              AuthFormField(hint: 'Password'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginForm extends StatelessWidget {
+  const LoginForm({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 92, bottom: 30),
+        child: SizedBox(
+          height: 162,
+          width: 342,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 56),
+              AuthFormField(hint: 'Username'),
+              SizedBox(height: 12),
+              AuthFormField(hint: 'Password'),
+            ],
+          ),
         ),
       ),
     );
