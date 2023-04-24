@@ -44,11 +44,15 @@ There are one basic Widget test, and two unit tests.
 
 ![image](https://user-images.githubusercontent.com/43929177/233986482-e75e9e15-6bdc-45a5-b566-1bfe410b8f86.png)
 
+![image](https://user-images.githubusercontent.com/43929177/233988415-52b68875-858c-4663-b9a8-c557c489f1e2.png)
+
+
   ## Dark Theme
   
 ![image](https://user-images.githubusercontent.com/43929177/233986837-c770409a-3471-4898-ad5c-6c141c159159.png)
 
 ![image](https://user-images.githubusercontent.com/43929177/233986918-6370c081-ee7f-4fcd-99f6-48659368a46a.png)
 
+![image](https://user-images.githubusercontent.com/43929177/233988127-a3ebfdfd-358f-4554-a258-46d00f82f913.png)
 
   
