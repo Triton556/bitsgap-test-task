@@ -9,7 +9,7 @@ User can login or sign up. After singing up, user data stores at local storage a
 If user sign out and login with previous data from sign up, he will be logged in.
 If user sign up, previous user data removes.
 
-<b>If user close app being authorized and reopen it, he is not logged out<b/>
+<b>If user close app being authorized and reopen it, he is not logged out</b>
  
 
 ## Design
