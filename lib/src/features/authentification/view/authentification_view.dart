@@ -1,11 +1,13 @@
-import 'package:bitsgap/src/constants/text_theme_constants.dart';
 import 'package:bitsgap/src/constants/theme_constants.dart';
+import 'package:bitsgap/src/features/authentification/application/auth_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../theme_provider/theme_provider.dart';
+import 'form_widgets/login_form.dart';
+import 'form_widgets/sign_up_form.dart';
 
 class AuthentificationView extends StatefulWidget {
   const AuthentificationView({Key? key}) : super(key: key);
@@ -16,11 +18,35 @@ class AuthentificationView extends StatefulWidget {
 
 class _AuthentificationViewState extends State<AuthentificationView>
     with TickerProviderStateMixin {
+  late TabController _tabController;
+  int _previousTabIndex = 0;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  void _handleTabTap(BuildContext context) {
+    AuthStore _authStore = Provider.of<AuthStore>(context, listen: false);
+    print('handleTabSelection');
+
+    if (_tabController.index == _previousTabIndex) {
+      if (_tabController.index == 0) {
+        print('login');
+        _authStore.login(context);
+      } else {
+        print('signUp');
+        _authStore.signUp(context);
+      }
+    } else {
+      _previousTabIndex = _tabController.index;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeStore themeStore = Provider.of<ThemeStore>(context);
-    TabController _tabController = TabController(length: 2, vsync: this);
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -43,6 +69,7 @@ class _AuthentificationViewState extends State<AuthentificationView>
                 ],
               ),
             ),
+            const ErrorMessageWidget(),
             Container(
               height: 40,
               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -50,14 +77,8 @@ class _AuthentificationViewState extends State<AuthentificationView>
                 color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: TabBar(
-                indicator: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                tabs: [Text('Login'), Text('Sign-up')],
-                controller: _tabController,
-              ),
+              child: AuthButtons(
+                  handleTabTap: _handleTabTap, tabController: _tabController),
             ),
             Padding(
               padding: EdgeInsets.only(top: 42),
@@ -69,83 +90,6 @@ class _AuthentificationViewState extends State<AuthentificationView>
           ],
         ),
       ),
-    );
-  }
-}
-
-class SignInForm extends StatelessWidget {
-  const SignInForm({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 92, bottom: 30),
-        child: SizedBox(
-          height: 162,
-          width: 342,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AuthFormField(hint: 'Email'),
-              SizedBox(height: 12),
-              AuthFormField(hint: 'Username'),
-              SizedBox(height: 12),
-              AuthFormField(hint: 'Password'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 92, bottom: 30),
-        child: SizedBox(
-          height: 162,
-          width: 342,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: 56),
-              AuthFormField(hint: 'Username'),
-              SizedBox(height: 12),
-              AuthFormField(hint: 'Password'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AuthFormField extends StatelessWidget {
-  final String? hint;
-
-  const AuthFormField({super.key, this.hint = ''});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(
-        constraints: const BoxConstraints(maxHeight: 46),
-        hintText: hint,
-        hintStyle: ttNormsProTextTheme.labelMedium,
-      ),
-      textAlignVertical: TextAlignVertical.bottom,
     );
   }
 }
@@ -177,5 +121,59 @@ class _Header extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class ErrorMessageWidget extends StatelessWidget {
+  const ErrorMessageWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      final errorMessage = Provider.of<AuthStore>(context).errorMessage;
+      if (errorMessage == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Text(
+          errorMessage,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
+      );
+    });
+  }
+}
+
+class AuthButtons extends StatelessWidget {
+  final TabController tabController;
+  final void Function(BuildContext context) handleTabTap;
+
+  const AuthButtons(
+      {Key? key, required this.tabController, required this.handleTabTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    AuthStore _authStore = Provider.of<AuthStore>(context, listen: false);
+
+    return Observer(builder: (context) {
+      return IgnorePointer(
+        ignoring: _authStore.isAuthProcess,
+        child: _authStore.isAuthProcess
+            ? const CircularProgressIndicator()
+            : TabBar(
+                indicator: BoxDecoration(
+                  color: _authStore.isAuthProcess
+                      ? Theme.of(context).disabledColor
+                      : Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                tabs: const [Text('Login'), Text('Sign-up')],
+                controller: tabController,
+                onTap: (v) => handleTabTap(context),
+              ),
+      );
+    });
   }
 }
